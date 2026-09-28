@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Retour à Slowbook</title>
+</head>
+<body>
+  <main>
+    <h1>Retour à Slowbook…</h1>
+    <p id="message">Votre navigateur revient à l’application sur cet ordinateur.</p>
+    <p><a id="continue" hidden>Continuer vers Slowbook</a></p>
+  </main>
+  <script>
+    const incoming = new URLSearchParams(window.location.search);
+    const state = incoming.get('state');
+    const code = incoming.get('code');
+    const error = incoming.get('error');
+    const destination = new URL('http://localhost:3000/auth/callback');
+
+    if (state && (code || error)) {
+      for (const key of ['state', 'code', 'realmId', 'error']) {
+        const value = incoming.get(key);
+        if (value) destination.searchParams.set(key, value);
+      }
+      const link = document.getElementById('continue');
+      link.href = destination.href;
+      link.hidden = false;
+      window.location.replace(destination.href);
+    } else {
+      document.getElementById('message').textContent =
+        'Ce lien sert uniquement au retour de connexion QuickBooks. Ouvrez Slowbook et cliquez sur Connecter QuickBooks.';
+    }
+  </script>
+</body>
+</html>
